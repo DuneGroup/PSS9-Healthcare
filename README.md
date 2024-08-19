@@ -19,6 +19,7 @@ PSS9-Healthcare is designed to provide insights into healthcare data breaches, l
 
 - Python 3.x
 - Pip (Python package installer)
+- UV (astral-sh UV for pip package installer) - optional
 
 ### Installation
 
@@ -32,12 +33,13 @@ PSS9-Healthcare is designed to provide insights into healthcare data breaches, l
 2. **Install dependencies:**
 
    ```bash
-   pip install -r requirements.txt
+   uv pip install -r requirements.txt
    ```  
 
 3. **Prepare the SQLite database:**
 
    Convert the provided CSV data into an SQLite database (if not already done):
+   *Note*: You can get an update CSV from https://ocrportal.hhs.gov/ocr/breach/breach_report.jsf
 
    ```bash
    python convert_csv_to_sqlite.py
@@ -55,3 +57,7 @@ PSS9-Healthcare is designed to provide insights into healthcare data breaches, l
 
 * Streamlit Dashboards: Access the interactive dashboards to filter and visualize healthcare breach data.
 * Datasette: Use the embedded Datasette interface for advanced data querying.
+
+## License
+
+This project is licensed under the MIT License. See the `LICENSE` file for more details.
