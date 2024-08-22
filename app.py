@@ -42,6 +42,29 @@ with tab1:
     if breach_type_filter:
         data_filtered = data_filtered[data_filtered['Type of Breach'].isin(breach_type_filter)]
 
+    # Calculate YoY percentage change for the selected year
+    # not sure if I want to include yet
+    yoy = """if year_filter > min(data['Breach Submission Date'].dt.year):
+        previous_year = year_filter - 1
+        data_previous_year = data[data['Breach Submission Date'].dt.year == previous_year]
+        
+        # Calculate the number of breaches for each year
+        current_year_breaches = len(data_filtered)
+        previous_year_breaches = len(data_previous_year)
+        
+        # Calculate the percentage change
+        if previous_year_breaches > 0:
+            yoy_change = ((current_year_breaches - previous_year_breaches) / previous_year_breaches) * 100
+        else:
+            yoy_change = None
+
+        # Display YoY change
+        if yoy_change is not None:
+            st.header(f"Year-over-Year Change in Breaches ({previous_year} to {year_filter})")
+            st.metric(label=f"YoY Percentage Change", value=f"{yoy_change:.2f}%")
+        else:
+            st.header(f"No data available for {previous_year} to calculate YoY change.")"""
+
     # Metric 1: Breaches by State
     st.header(f"Breaches by State ({year_filter})")
     state_counts = data_filtered['State'].value_counts().reset_index()
@@ -62,26 +85,31 @@ with tab1:
     fig3 = px.line(affected_over_time, x='Breach Submission Date', y='Individuals Affected', title=f'Trend of Individuals Affected Over Time ({year_filter})', labels={'Individuals Affected': 'Number of Individuals'})
     st.plotly_chart(fig3)
 
-    # Metric 4: Location of Breached Information
+    # Metric 4: Location of Breached Information (Bar Chart)
     st.header(f"Location of Breached Information ({year_filter})")
     location_counts = data_filtered['Location of Breached Information'].value_counts().reset_index()
     location_counts.columns = ['Location of Breached Information', 'Count']
     fig4 = px.bar(location_counts, x='Location of Breached Information', y='Count', title=f'Location of Breached Information ({year_filter})', labels={'Count': 'Number of Breaches'})
     st.plotly_chart(fig4)
 
-    # Metric 5: Breach Submission Trends
+    # Metric 5: Location of Breached Information (Pie Chart)
+    st.header(f"Distribution of Breached Information Locations ({year_filter})")
+    fig5 = px.pie(location_counts, names='Location of Breached Information', values='Count', title=f'Distribution of Breached Information Locations ({year_filter})')
+    st.plotly_chart(fig5)
+
+    # Metric 6: Breach Submission Trends
     st.header(f"Breach Submission Trends ({year_filter})")
     submission_trends = data_filtered.groupby(data_filtered['Breach Submission Date'].dt.to_period('M')).size().reset_index(name='Count')
     submission_trends['Breach Submission Date'] = submission_trends['Breach Submission Date'].dt.to_timestamp()
-    fig5 = px.line(submission_trends, x='Breach Submission Date', y='Count', title=f'Trend of Breach Submissions Over Time ({year_filter})', labels={'Count': 'Number of Breaches'})
-    st.plotly_chart(fig5)
+    fig6 = px.line(submission_trends, x='Breach Submission Date', y='Count', title=f'Trend of Breach Submissions Over Time ({year_filter})', labels={'Count': 'Number of Breaches'})
+    st.plotly_chart(fig6)
 
-    # Metric 6: Percentage of Reports Received by Entity Type
+    # Metric 7: Percentage of Reports Received by Entity Type
     st.header(f"Percentage of Reports Received by Entity Type ({year_filter})")
     entity_type_counts = data_filtered['Covered Entity Type'].value_counts().reset_index()
     entity_type_counts.columns = ['Covered Entity Type', 'Count']
-    fig6 = px.pie(entity_type_counts, names='Covered Entity Type', values='Count', title=f'Percentage of Reports by Entity Type ({year_filter})')
-    st.plotly_chart(fig6)
+    fig7 = px.pie(entity_type_counts, names='Covered Entity Type', values='Count', title=f'Percentage of Reports by Entity Type ({year_filter})')
+    st.plotly_chart(fig7)
 
     # Show filtered data
     st.header(f"Filtered Data ({year_filter})")
