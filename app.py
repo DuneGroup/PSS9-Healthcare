@@ -23,6 +23,9 @@ data['Breach Submission Date'] = pd.to_datetime(data['Breach Submission Date'], 
 # Streamlit app
 st.title("Healthcare Data Breach Analysis")
 
+# Add logo to the sidebar
+st.sidebar.image("health-insurance.png", use_column_width=True)
+
 # Tabs for different features
 tab1, tab2 = st.tabs(["Data Visualization", "Datasette Explorer"])
 
