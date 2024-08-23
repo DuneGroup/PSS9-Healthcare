@@ -87,6 +87,9 @@ data['Breach Submission Date'] = pd.to_datetime(data['Breach Submission Date'], 
 # Streamlit app
 st.title("Healthcare Data Breach Analysis")
 
+# Add logo to the sidebar
+st.sidebar.image("health-insurance.png", use_column_width=True)
+
 # Tabs for different features
 tab1, tab2 = st.tabs(["Data Visualization", "Datasette Explorer"])
 
@@ -165,26 +168,26 @@ with tab1:
     fig3 = px.line(affected_over_time, x='Breach Submission Date', y='Individuals Affected', title=f'Trend of Individuals Affected Over Time ({year_filter})', labels={'Individuals Affected': 'Number of Individuals'})
     st.plotly_chart(fig3)
 
-    # Metric 4: Location of Breached Information
-    st.header(f"Location of Breached Information ({year_filter})")
+    # Metric 4: Location of Breached Information (Pie Chart)
+    st.header(f"Distribution of Breached Information Locations ({year_filter})")
     location_counts = data_filtered['Location of Breached Information'].value_counts().reset_index()
     location_counts.columns = ['Location of Breached Information', 'Count']
-    fig4 = px.bar(location_counts, x='Location of Breached Information', y='Count', title=f'Location of Breached Information ({year_filter})', labels={'Count': 'Number of Breaches'})
-    st.plotly_chart(fig4)
+    fig5 = px.pie(location_counts, names='Location of Breached Information', values='Count', title=f'Distribution of Breached Information Locations ({year_filter})')
+    st.plotly_chart(fig5)
 
     # Metric 5: Breach Submission Trends
     st.header(f"Breach Submission Trends ({year_filter})")
     submission_trends = data_filtered.groupby(data_filtered['Breach Submission Date'].dt.to_period('M')).size().reset_index(name='Count')
     submission_trends['Breach Submission Date'] = submission_trends['Breach Submission Date'].dt.to_timestamp()
-    fig5 = px.line(submission_trends, x='Breach Submission Date', y='Count', title=f'Trend of Breach Submissions Over Time ({year_filter})', labels={'Count': 'Number of Breaches'})
-    st.plotly_chart(fig5)
+    fig6 = px.line(submission_trends, x='Breach Submission Date', y='Count', title=f'Trend of Breach Submissions Over Time ({year_filter})', labels={'Count': 'Number of Breaches'})
+    st.plotly_chart(fig6)
 
     # Metric 6: Percentage of Reports Received by Entity Type
     st.header(f"Percentage of Reports Received by Entity Type ({year_filter})")
     entity_type_counts = data_filtered['Covered Entity Type'].value_counts().reset_index()
     entity_type_counts.columns = ['Covered Entity Type', 'Count']
-    fig6 = px.pie(entity_type_counts, names='Covered Entity Type', values='Count', title=f'Percentage of Reports by Entity Type ({year_filter})')
-    st.plotly_chart(fig6)
+    fig7 = px.pie(entity_type_counts, names='Covered Entity Type', values='Count', title=f'Percentage of Reports by Entity Type ({year_filter})')
+    st.plotly_chart(fig7)
 
     # Metric 7: Time Distribution
     st.header(f"Breaches Report Frequency in ({year_filter})")
