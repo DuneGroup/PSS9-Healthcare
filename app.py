@@ -1,16 +1,16 @@
-#import subprocess
+import subprocess
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-import july
 import matplotlib.pyplot as plt
 
+
 # Function to start Datasette
-##def start_datasette():
-#    subprocess.Popen(["datasette", "breach_report.db"])
+def start_datasette():
+    subprocess.Popen(["datasette", "breach_report.db"])
 
 # Start Datasette
-#start_datasette()
+start_datasette()
 
 US_STATES = {
     "Alabama": "AL",
@@ -172,31 +172,22 @@ with tab1:
     st.header(f"Distribution of Breached Information Locations ({year_filter})")
     location_counts = data_filtered['Location of Breached Information'].value_counts().reset_index()
     location_counts.columns = ['Location of Breached Information', 'Count']
-    fig5 = px.pie(location_counts, names='Location of Breached Information', values='Count', title=f'Distribution of Breached Information Locations ({year_filter})')
-    st.plotly_chart(fig5)
+    fig4 = px.pie(location_counts, names='Location of Breached Information', values='Count', title=f'Distribution of Breached Information Locations ({year_filter})')
+    st.plotly_chart(fig4)
 
     # Metric 5: Breach Submission Trends
     st.header(f"Breach Submission Trends ({year_filter})")
     submission_trends = data_filtered.groupby(data_filtered['Breach Submission Date'].dt.to_period('M')).size().reset_index(name='Count')
     submission_trends['Breach Submission Date'] = submission_trends['Breach Submission Date'].dt.to_timestamp()
-    fig6 = px.line(submission_trends, x='Breach Submission Date', y='Count', title=f'Trend of Breach Submissions Over Time ({year_filter})', labels={'Count': 'Number of Breaches'})
-    st.plotly_chart(fig6)
+    fig5 = px.line(submission_trends, x='Breach Submission Date', y='Count', title=f'Trend of Breach Submissions Over Time ({year_filter})', labels={'Count': 'Number of Breaches'})
+    st.plotly_chart(fig5)
 
     # Metric 6: Percentage of Reports Received by Entity Type
     st.header(f"Percentage of Reports Received by Entity Type ({year_filter})")
     entity_type_counts = data_filtered['Covered Entity Type'].value_counts().reset_index()
     entity_type_counts.columns = ['Covered Entity Type', 'Count']
-    fig7 = px.pie(entity_type_counts, names='Covered Entity Type', values='Count', title=f'Percentage of Reports by Entity Type ({year_filter})')
-    st.plotly_chart(fig7)
-
-    # Metric 7: Time Distribution
-    st.header(f"Breaches Report Frequency in ({year_filter})")
-    count_by_date = data_filtered.groupby('Breach Submission Date')['Name of Covered Entity'].nunique().reset_index(name='Breach Count').sort_values('Breach Count', ascending=False).head(50).reset_index(drop=True)
-    st.write(count_by_date)
-    fig, ax = plt.subplots()
-    july.heatmap(count_by_date['Breach Submission Date'], count_by_date['Breach Count'], cmap="golden", colorbar=True, title="Breach Calendar",ax=ax)
-    st.pyplot(fig)
-
+    fig6 = px.pie(entity_type_counts, names='Covered Entity Type', values='Count', title=f'Percentage of Reports by Entity Type ({year_filter})')
+    st.plotly_chart(fig6)
 
     # Metric 8: recurring breaches
     st.header("Breaches by Entity Across years") 
@@ -221,5 +212,5 @@ with tab2:
     Explore the dataset in a more interactive and queryable way using Datasette. Below is an embedded view of the Datasette interface.
     """)
     st.markdown("""
-    <iframe src="http://localhost:8001" width="1000" height="800"></iframe>
+    <iframe src="http://127.0.0.1:8001" width="1000" height="800"></iframe>
     """, unsafe_allow_html=True)
