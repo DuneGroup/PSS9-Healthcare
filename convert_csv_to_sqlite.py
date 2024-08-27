@@ -1,5 +1,8 @@
+# use this script if you want to download HHS/OCR fresh csv and load into
+# sqlite db
 import pandas as pd
 import sqlite3
+
 
 # Load the CSV data into a pandas DataFrame
 df = pd.read_csv("HHS - breach_report.csv")

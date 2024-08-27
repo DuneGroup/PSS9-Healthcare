@@ -67,16 +67,21 @@ US_STATES = {
 }
 
 
-
-# source: https://www.census.gov/data/tables/time-series/demo/popest/2020s-state-total.html
 @st.cache_data
 def load_pop_data():
-    return pd.read_csv('NST-EST2023-ALLDATA.csv')
+    """
+    CENSUS population data from https://www.census.gov/data/tables/time-series/demo/popest/2020s-state-total.html
+    """
+    return pd.read_csv('data/NST-EST2023-ALLDATA.csv')
 
-# Load the data
+
 @st.cache_data
 def load_data():
-    return pd.read_csv("HHS - breach_report.csv")
+    """
+    Load HHS breach report data
+    """
+    return pd.read_csv("data/HHS - breach_report.csv")
+
 
 data = load_data()
 pop_data = load_pop_data()
@@ -125,12 +130,11 @@ with tab1:
         'STATE_CODE': 'State',
         pop_column: 'PopCount'
     })
-    
+
     df_merged = pd.merge(state_counts, pop_data_merge_df, on='State')
 
     # Sorting the merged dataframe by 'state_code' for consistent plotting
     df_merged = df_merged.sort_values('Count', ascending=False)
-    st.write(df_merged)
 
     # Plotting
     fig, ax1 = plt.subplots(figsize=(14, 7))
@@ -190,8 +194,8 @@ with tab1:
     st.plotly_chart(fig6)
 
     # Metric 8: recurring breaches
-    st.header("Breaches by Entity Across years") 
-    count_by_entity = data.groupby('Name of Covered Entity')['Breach Submission Date'].nunique().reset_index(name='Breach Count').sort_values('Breach Count', ascending=False).head(50).reset_index(drop=True)
+    st.header("Breaches by Entity") 
+    count_by_entity = data_filtered.groupby('Name of Covered Entity')['Breach Submission Date'].nunique().reset_index(name='Breach Count').sort_values('Breach Count', ascending=False).head(50).reset_index(drop=True)
     st.write(count_by_entity)
 
     # Show filtered data
